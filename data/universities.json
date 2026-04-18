@@ -1,0 +1,110 @@
+[
+  {
+    "id": "unimelb",
+    "name": "University of Melbourne",
+    "nameZh": "墨尔本大学",
+    "shortName": "UniMelb",
+    "shortNameZh": "墨大",
+    "country": "australia",
+    "city": "Melbourne",
+    "website": "https://www.unimelb.edu.au",
+    "ranking": 33,
+    "coordinates": [144.9631, -37.7963]
+  },
+  {
+    "id": "usyd",
+    "name": "University of Sydney",
+    "nameZh": "悉尼大学",
+    "shortName": "USyd",
+    "shortNameZh": "悉大",
+    "country": "australia",
+    "city": "Sydney",
+    "website": "https://www.sydney.edu.au",
+    "ranking": 41,
+    "coordinates": [151.1872, -33.8882]
+  },
+  {
+    "id": "unsw",
+    "name": "UNSW Sydney",
+    "nameZh": "新南威尔士大学",
+    "shortName": "UNSW",
+    "shortNameZh": "新南威",
+    "country": "australia",
+    "city": "Sydney",
+    "website": "https://www.unsw.edu.au",
+    "ranking": 45,
+    "coordinates": [151.2313, -33.9173]
+  },
+  {
+    "id": "monash",
+    "name": "Monash University",
+    "nameZh": "莫纳什大学",
+    "shortName": "Monash",
+    "shortNameZh": "莫纳什",
+    "country": "australia",
+    "city": "Melbourne",
+    "website": "https://www.monash.edu",
+    "ranking": 57,
+    "coordinates": [145.1312, -37.9105]
+  },
+  {
+    "id": "hku",
+    "name": "University of Hong Kong",
+    "nameZh": "香港大学",
+    "shortName": "HKU",
+    "shortNameZh": "港大",
+    "country": "hong-kong",
+    "city": "Hong Kong",
+    "website": "https://www.hku.hk",
+    "ranking": 26,
+    "coordinates": [114.1375, 22.2839]
+  },
+  {
+    "id": "hkust",
+    "name": "Hong Kong University of Science and Technology",
+    "nameZh": "香港科技大学",
+    "shortName": "HKUST",
+    "shortNameZh": "科大",
+    "country": "hong-kong",
+    "city": "Hong Kong",
+    "website": "https://www.ust.hk",
+    "ranking": 40,
+    "coordinates": [114.2661, 22.3360]
+  },
+  {
+    "id": "cuhk",
+    "name": "Chinese University of Hong Kong",
+    "nameZh": "香港中文大学",
+    "shortName": "CUHK",
+    "shortNameZh": "中大",
+    "country": "hong-kong",
+    "city": "Hong Kong",
+    "website": "https://www.cuhk.edu.hk",
+    "ranking": 47,
+    "coordinates": [114.2098, 22.4197]
+  },
+  {
+    "id": "nus",
+    "name": "National University of Singapore",
+    "nameZh": "新加坡国立大学",
+    "shortName": "NUS",
+    "shortNameZh": "国大",
+    "country": "singapore",
+    "city": "Singapore",
+    "website": "https://www.nus.edu.sg",
+    "ranking": 8,
+    "coordinates": [103.7764, 1.2966]
+  },
+  {
+    "id": "ntu",
+    "name": "Nanyang Technological University",
+    "nameZh": "南洋理工大学",
+    "shortName": "NTU",
+    "shortNameZh": "南大",
+    "country": "singapore",
+    "city": "Singapore",
+    "website": "https://www.ntu.edu.sg",
+    "ranking": 15,
+    "coordinates": [103.6831, 1.3483]
+  }
+]

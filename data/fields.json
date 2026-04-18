@@ -1,0 +1,15 @@
+[
+  {"id":"architecture","label":"Architecture & Built Environment","labelZh":"建築與建成環境","icon":"🏛️"},
+  {"id":"urban-planning","label":"Urban Planning & Design","labelZh":"城市規劃與設計","icon":"🏙️"},
+  {"id":"construction","label":"Construction & Infrastructure","labelZh":"建築工程與基礎設施","icon":"🏗️"},
+  {"id":"property","label":"Property & Housing","labelZh":"房地產與住房","icon":"🏢"},
+  {"id":"landscape","label":"Landscape & Environment","labelZh":"景觀與環境","icon":"🌿"},
+  {"id":"transport","label":"Transport & Mobility","labelZh":"交通與出行","icon":"🚆"},
+  {"id":"engineering","label":"Engineering (General)","labelZh":"工程學（綜合）","icon":"⚙️"},
+  {"id":"computer-science","label":"Computer Science & AI","labelZh":"計算機科學與人工智能","icon":"💻"},
+  {"id":"environmental-science","label":"Environmental Science","labelZh":"環境科學","icon":"🌍"},
+  {"id":"medicine","label":"Medicine & Biology","labelZh":"醫學與生物學","icon":"🧬"},
+  {"id":"social-science","label":"Social Science & Humanities","labelZh":"社會科學與人文","icon":"📚"},
+  {"id":"economics","label":"Economics & Business","labelZh":"經濟與商業","icon":"📊"},
+  {"id":"other","label":"Other","labelZh":"其他","icon":"🔬"}
+]
