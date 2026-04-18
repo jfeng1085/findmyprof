@@ -1,9 +1,11 @@
 """
-Enriches professors.json with real hIndex and citations from OpenAlex.
-- Filters institutions by country_code == "AU" to avoid name collisions (e.g. RMIT vs MIT)
-- Skips professors that already have hIndex > 0 (resumable)
-- Saves progress every 50 records
-- Run: python scripts/enrich_openalex.py
+Corrects the university field for all professors via OpenAlex.
+The ARC dataset assigns ALL investigators on a grant the lead institution,
+so co-investigators from other universities are incorrectly tagged.
+This script queries OpenAlex for every professor and updates university
+based on their actual AU affiliation.
+
+Run: python scripts/fix_university.py
 """
 
 import json
@@ -15,49 +17,54 @@ from pathlib import Path
 PROFESSORS_PATH = Path("data/professors.json")
 UA = "FindMyProf/1.0 (fengjie19930211@gmail.com)"
 SAVE_INTERVAL = 50
-DELAY = 0.2  # ~5 req/s — safer rate to avoid 429s
+DELAY = 0.5  # conservative — 2 req/s
 
 OPENALEX_NAME_MAP = {
     # Australia — Group of Eight
     "university of melbourne": "unimelb",
+    "the university of melbourne": "unimelb",
     "university of sydney": "usyd",
     "the university of sydney": "usyd",
     "unsw sydney": "unsw",
     "university of new south wales": "unsw",
     "monash university": "monash",
     "university of queensland": "uq",
+    "the university of queensland": "uq",
     "australian national university": "anu",
     "university of adelaide": "uadelaide",
+    "the university of adelaide": "uadelaide",
     "university of western australia": "uwa",
-    # Australia — Technology Network
+    "the university of western australia": "uwa",
+    # Technology Network
     "rmit university": "rmit",
     "queensland university of technology": "qut",
     "curtin university": "curtin",
     "university of technology sydney": "uts",
     "university of south australia": "unisa",
-    # Australia — Innovative Research Universities
+    # Innovative Research Universities
     "griffith university": "griffith",
     "la trobe university": "latrobe",
     "james cook university": "jcu",
     "flinders university": "flinders",
     "murdoch university": "murdoch",
     "charles darwin university": "cdu",
-    # Australia — Other major
+    # Other major
     "deakin university": "deakin",
     "swinburne university of technology": "swinburne",
     "macquarie university": "macquarie",
     "university of newcastle": "newcastle",
+    "the university of newcastle": "newcastle",
     "university of wollongong": "uow",
     "western sydney university": "wsu",
-    "charles sturt university": "csu",
-    "federation university australia": "federation",
     "edith cowan university": "ecu",
-    "victoria university": "vu",
+    "australian catholic university": "acu",
+    "charles sturt university": "csu",
     "bond university": "bond",
     "southern cross university": "scu",
+    "federation university australia": "federation",
+    "victoria university": "vu",
     "university of the sunshine coast": "usc",
     "central queensland university": "cqu",
-    "australian catholic university": "acu",
     # Hong Kong
     "university of hong kong": "hku",
     "hong kong university of science and technology": "hkust",
@@ -68,11 +75,7 @@ OPENALEX_NAME_MAP = {
 }
 
 
-def institution_to_id(display_name: str) -> str | None:
-    return OPENALEX_NAME_MAP.get(display_name.lower().strip())
-
-
-def lookup(name: str) -> dict | None:
+def lookup_university(name: str) -> str | None:
     try:
         r = requests.get(
             "https://api.openalex.org/authors",
@@ -84,17 +87,12 @@ def lookup(name: str) -> dict | None:
         results = r.json().get("results", [])
         if not results:
             return None
-        a = results[0]
-        stats = a.get("summary_stats", {})
-        affils = a.get("last_known_institutions", [])
-        au_affils = [i for i in affils if i.get("country_code") == "AU"]
-        best_affil = au_affils[0] if au_affils else (affils[0] if affils else None)
-        return {
-            "hIndex": stats.get("h_index", 0) or 0,
-            "citations": a.get("cited_by_count", 0) or 0,
-            "institution_name": best_affil["display_name"] if best_affil else None,
-            "institution_id": institution_to_id(best_affil["display_name"]) if best_affil else None,
-        }
+        affils = results[0].get("last_known_institutions", [])
+        au_affils = [a for a in affils if a.get("country_code") == "AU"]
+        best = au_affils[0] if au_affils else None
+        if not best:
+            return None
+        return OPENALEX_NAME_MAP.get(best["display_name"].lower().strip())
     except Exception as e:
         print(f"  ERROR: {e}", flush=True)
         return None
@@ -103,40 +101,39 @@ def lookup(name: str) -> dict | None:
 def main():
     sys.stdout.reconfigure(encoding="utf-8")
     profs = json.loads(PROFESSORS_PATH.read_text(encoding="utf-8"))
+    print(f"Total professors: {len(profs)}")
 
-    todo = [p for p in profs if p.get("hIndex", 0) == 0]
-    print(f"Total: {len(profs)} professors. To enrich: {len(todo)}. Already done: {len(profs) - len(todo)}.")
-
-    updated = 0
+    corrected = 0
+    unchanged = 0
     not_found = 0
 
     for i, prof in enumerate(profs):
-        if prof.get("hIndex", 0) > 0:
-            continue
+        uni_id = lookup_university(prof["name"])
 
-        result = lookup(prof["name"])
-        if result:
-            prof["hIndex"] = result["hIndex"]
-            prof["citations"] = result["citations"]
-            if result["institution_id"]:
-                prof["university"] = result["institution_id"]
-            updated += 1
-            print(
-                f"[{i+1}/{len(profs)}] {prof['name']} -> h={result['hIndex']} c={result['citations']} uni={result['institution_name']}",
-                flush=True,
-            )
-        else:
+        if uni_id is None:
             not_found += 1
             print(f"[{i+1}/{len(profs)}] {prof['name']} -> not found", flush=True)
+        elif uni_id != prof["university"]:
+            old = prof["university"]
+            prof["university"] = uni_id
+            corrected += 1
+            print(f"[{i+1}/{len(profs)}] {prof['name']} -> CHANGED {old} -> {uni_id}", flush=True)
+        else:
+            unchanged += 1
+            print(f"[{i+1}/{len(profs)}] {prof['name']} -> confirmed {uni_id}", flush=True)
 
         if (i + 1) % SAVE_INTERVAL == 0:
-            PROFESSORS_PATH.write_text(json.dumps(profs, ensure_ascii=False, indent=2), encoding="utf-8")
-            print(f"  -- saved checkpoint ({i+1} processed) --", flush=True)
+            PROFESSORS_PATH.write_text(
+                json.dumps(profs, ensure_ascii=False, indent=2), encoding="utf-8"
+            )
+            print(f"  -- checkpoint saved ({i+1} processed) --", flush=True)
 
         time.sleep(DELAY)
 
-    PROFESSORS_PATH.write_text(json.dumps(profs, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(f"\nDone. Updated: {updated}, Not found: {not_found}")
+    PROFESSORS_PATH.write_text(
+        json.dumps(profs, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
+    print(f"\nDone. Corrected: {corrected} | Unchanged: {unchanged} | Not found: {not_found}")
 
 
 if __name__ == "__main__":
