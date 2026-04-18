@@ -1,7 +1,7 @@
 # FindMyProf — 找到你理想的海外导师
 
 **Last Updated:** 2026-04-18
-**Last Session Completed:** Final build check + SEO metadata added to all pages, ready for deployment
+**Last Session Completed:** OpenAlex enrichment — 880/1,304 professors now have real hIndex data; 8 universities added to universities.json
 
 A study-abroad supervisor-finder website for Chinese students seeking postgraduate supervisors in Australia, Hong Kong, and Singapore.
 
@@ -9,7 +9,7 @@ A study-abroad supervisor-finder website for Chinese students seeking postgradua
 
 ## Current Status
 
-**Phase 6 complete. Build passes cleanly. SEO metadata added to all pages. Ready to deploy to Vercel.**
+**Phase 6 complete. Build passes cleanly. SEO metadata added to all pages. 880/1,304 AU professors enriched with real hIndex from OpenAlex. Ready to deploy to Vercel.**
 
 Country pages live at `/country/[country]` (statically generated for AU/HK/SG). Each page shows:
 - A breadcrumb (首页 > Country)
@@ -207,9 +207,11 @@ package.json                         — Dependencies (next, react, react-simple
 - ~~[FIXED] fields.json/professors.json field ID mismatch — both now use the 13 ARC-aligned subject IDs~~
 - scripts/output/ should be added to .gitignore (scraped data files)
 - professors.json currently has all 1,304 professors as `country: "australia"` — HK/SG data not yet imported
-- professors.json has no real hIndex/citations data (all 0) — needs Semantic Scholar enrichment
+- ~~[FIXED] professors.json has no real hIndex data~~ — 880/1,304 professors enriched via OpenAlex
+- professors.json citations still all 0 — OpenAlex rate-limited; retry in a future session with slower delay
+- 424 professors not found in OpenAlex (names too common or not indexed)
 - professor nameZh is blank for all ARC records — Chinese name lookup not yet implemented
-- universities.json may not cover all universities in the ARC dataset — unknown university IDs will show no university name on ProfessorCard
+- ~~[FIXED] universities.json missing AU universities~~ — all 12 AU universities now in universities.json
 
 ---
 
