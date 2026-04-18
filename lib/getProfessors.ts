@@ -4,6 +4,7 @@ export interface FilterState {
   titles: string[];
   gender: "all" | "male" | "female";
   minHIndex: number;
+  universities: string[];
 }
 
 export type SortBy = "rating" | "citations" | "hindex" | "name";
@@ -12,6 +13,7 @@ export const DEFAULT_FILTERS: FilterState = {
   titles: [],
   gender: "all",
   minHIndex: 0,
+  universities: [],
 };
 
 function avgRating(reviews: Professor["reviews"]): number {
@@ -30,6 +32,7 @@ export function filterProfessors(
       return false;
     if (filters.gender !== "all" && p.gender !== filters.gender) return false;
     if (p.hIndex < filters.minHIndex) return false;
+    if (filters.universities.length > 0 && !filters.universities.includes(p.university)) return false;
     return true;
   });
 }

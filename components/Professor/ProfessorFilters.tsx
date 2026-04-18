@@ -3,12 +3,14 @@
 import { useState } from "react";
 import { type FilterState, type SortBy, DEFAULT_FILTERS } from "@/lib/getProfessors";
 import { cn } from "@/lib/utils";
+import type { University } from "@/lib/types";
 
 interface Props {
   filters: FilterState;
   sortBy: SortBy;
   onChange: (filters: FilterState) => void;
   onSortChange: (sort: SortBy) => void;
+  universities: University[];
 }
 
 const TITLES = [
@@ -23,8 +25,16 @@ export default function ProfessorFilters({
   sortBy,
   onChange,
   onSortChange,
+  universities,
 }: Props) {
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  const toggleUniversity = (id: string) => {
+    const next = filters.universities.includes(id)
+      ? filters.universities.filter((u) => u !== id)
+      : [...filters.universities, id];
+    onChange({ ...filters, universities: next });
+  };
 
   const toggleTitle = (title: string) => {
     const next = filters.titles.includes(title)
@@ -36,7 +46,8 @@ export default function ProfessorFilters({
   const hasActiveFilters =
     filters.titles.length > 0 ||
     filters.gender !== "all" ||
-    filters.minHIndex > 0;
+    filters.minHIndex > 0 ||
+    filters.universities.length > 0;
 
   const reset = () => {
     onChange(DEFAULT_FILTERS);
@@ -61,6 +72,28 @@ export default function ProfessorFilters({
           <option value="name">姓名</option>
         </select>
       </div>
+
+      {/* University checkboxes */}
+      {universities.length > 0 && (
+        <div>
+          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
+            院校
+          </p>
+          <div className="flex flex-col gap-2">
+            {universities.map((u) => (
+              <label key={u.id} className="flex items-center gap-2.5 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={filters.universities.includes(u.id)}
+                  onChange={() => toggleUniversity(u.id)}
+                  className="w-4 h-4 accent-brand-600 rounded"
+                />
+                <span className="text-sm text-gray-700">{u.shortName ?? u.name}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Title checkboxes */}
       <div>

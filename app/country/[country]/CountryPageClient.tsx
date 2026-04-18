@@ -121,6 +121,7 @@ export default function CountryPageClient({
           sortBy={sortBy}
           onChange={setFilters}
           onSortChange={setSortBy}
+          universities={universities}
         />
 
         <div className="flex-1 min-w-0">
