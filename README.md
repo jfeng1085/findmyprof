@@ -1,7 +1,7 @@
 # FindMyProf — 找到你理想的海外导师
 
 **Last Updated:** 2026-04-18
-**Last Session Completed:** OpenAlex enrichment — 880/1,304 professors now have real hIndex data; 8 universities added to universities.json
+**Last Session Completed:** Scroll fix, university affiliation filter, name search bar, SEO metadata, OpenAlex hIndex enrichment, deployed to GitHub
 
 A study-abroad supervisor-finder website for Chinese students seeking postgraduate supervisors in Australia, Hong Kong, and Singapore.
 
@@ -9,15 +9,16 @@ A study-abroad supervisor-finder website for Chinese students seeking postgradua
 
 ## Current Status
 
-**Phase 6 complete. Build passes cleanly. SEO metadata added to all pages. 880/1,304 AU professors enriched with real hIndex from OpenAlex. Ready to deploy to Vercel.**
+**Phase 6 complete. Build passes cleanly. Pushed to GitHub (jfeng1085/findmyprof). Ready to deploy to Vercel.**
 
 Country pages live at `/country/[country]` (statically generated for AU/HK/SG). Each page shows:
 - A breadcrumb (首页 > Country)
-- 13 field selector pills with emoji icons (read from fields.json); selected = filled blue, unselected = gray; updates URL with `?field=` via `router.replace` (no page reload)
-- A sticky left filter sidebar on desktop (collapsible "筛选" panel on mobile) with title checkboxes, gender radio, min h-index slider, sort dropdown, and reset button
-- A responsive professor grid (1/2/3 columns) with `ProfessorCard`: avatar initials, title badge (colour-coded), university short name, research area tags (max 3), h-index, star rating, bookmark toggle (localStorage)
+- 13 field selector pills with emoji icons; selected = filled blue, unselected = gray; updates URL with `?field=`
+- A name search bar (filters by first/last name instantly, bilingual placeholder, clear button)
+- A sticky left filter sidebar on desktop (collapsible on mobile) with: university (affiliation) checkboxes, title checkboxes, gender radio, min h-index slider, sort dropdown, reset button
+- A responsive professor grid (1/2/3 columns) with `ProfessorCard`
 - An empty state message when filters return 0 results
-- All filtering and sorting is client-side; no page reload needed
+- All filtering, searching, and sorting is client-side; no page reload needed
 
 Phase 2 was: homepage splash screen (4s, sessionStorage-gated), interactive world map, sticky navbar.
 
@@ -211,7 +212,12 @@ package.json                         — Dependencies (next, react, react-simple
 - professors.json citations still all 0 — OpenAlex rate-limited; retry in a future session with slower delay
 - 424 professors not found in OpenAlex (names too common or not indexed)
 - professor nameZh is blank for all ARC records — Chinese name lookup not yet implemented
-- ~~[FIXED] universities.json missing AU universities~~ — all 12 AU universities now in universities.json
+- ~~[FIXED] universities.json missing AU universities~~ — 25 AU universities now in universities.json
+- ~~[FIXED] Scroll locked on country/professor pages~~ — removed global overflow:hidden from globals.css
+- ~~[FIXED] No university filter in sidebar~~ — affiliation checkboxes added to filter panel
+- ~~[FIXED] No name search~~ — search bar added above professor grid
+- University affiliation correction pending — ARC data assigns all investigators the lead institution; `fix_university.py` is ready but OpenAlex API hit daily rate limit. Run `python scripts/fix_university.py` next session (tomorrow).
+- citations still all 0 — retry in a future session after API cooldown
 
 ---
 
